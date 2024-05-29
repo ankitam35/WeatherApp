@@ -1,3 +1,10 @@
+interface Condition {
+  text: string;
+  icon: string;
+  code: number;
+}
+
+
 export interface CurrentInterface {
   last_updated_epoch: number;
   last_updated: string;
@@ -6,6 +13,7 @@ export interface CurrentInterface {
   is_day: number;
   wind_mph: number;
   wind_kph: number;
+  condition: Condition;
   wind_degree: number;
   wind_dir: string;
   pressure_mb: number;
@@ -43,4 +51,5 @@ export interface LocationInterface {
 export interface WeatherData {
   location: LocationInterface;
   current: CurrentInterface;
+  forecast: any
 }

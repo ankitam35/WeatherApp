@@ -18,6 +18,7 @@ import {useCallback, useState} from 'react';
 import {debounce} from 'lodash';
 import {fetchLocation, fetchWeatherForecast} from '../../api/weather';
 import {WeatherData} from '../interfaces';
+import {WeatherImages} from '../../constants';
 
 const borderClass = (index: number, arr: number[]) => {
   return index + 1 !== arr.length ? 'border-b-2 border-b-gray-400' : '';
@@ -49,6 +50,11 @@ export const HomeScreen = () => {
       temp_c: 0,
       temp_f: 0,
       is_day: 0,
+      condition: {
+        text: '',
+        icon: '',
+        code: 0,
+      },
       wind_mph: 0,
       wind_kph: 0,
       wind_degree: 0,
@@ -73,6 +79,7 @@ export const HomeScreen = () => {
       gust_mph: 0,
       gust_kph: 0,
     },
+    forecast: {},
   };
 
   const [weather, setWeather] = useState<WeatherData>(initialWeather);
@@ -80,13 +87,14 @@ export const HomeScreen = () => {
   const handleLocation = (loc: {name: string}) => {
     setLocations([]);
     fetchWeatherForecast({cityName: loc.name, days: 7}).then(data =>
-      console.log(data),
+      setWeather(data),
     );
   };
 
   const handleSearch = (value: string) => {
     if (value.length > 2) {
       fetchLocation({cityName: value}).then(data => setLocations(data));
+      console.log(locations);
     }
   };
 
@@ -149,38 +157,48 @@ export const HomeScreen = () => {
           <Text className="text-white text-center text-2xl font-bold">
             {location?.name}
             <Text className="text-lg font-semibold text-gray-300">
-              {location?.country}
+              {', ' + location?.country}
             </Text>
           </Text>
           <View className="flex-row justify-center">
             <Image
-              source={require('../../assets/images/partlycloudy.png')}
+              source={WeatherImages[current?.condition?.text] ?? 'other'}
               className="w-52 h-52"
             />
           </View>
           <View className="space-y-2">
             <Text className="text-center font-bold text-white text-6xl ml-5">
-              23&#176;
+              {current.temp_c}&#176;
             </Text>
             <Text className="text-center text-white text-xl tracking-widest">
-              Partly Cloudy
+              {current?.condition?.text}
             </Text>
           </View>
         </View>
         <View className="flex-row justify-between mx-4 mb-2">
           <View className="flex-row space-x-2 items-center">
             <Image
-              source={require('../../assets/icons/wind.png')}
+              source={
+                WeatherImages[
+                  Object.keys(WeatherImages).includes(current?.condition?.text)
+                    ? current?.condition?.text
+                    : 'other'
+                ]
+              }
               className="h-6 w-6"
             />
-            <Text className="text-white font-semibold text-base">22km</Text>
+            <Text className="text-white font-semibold text-base">
+              {current?.wind_kph}km
+            </Text>
           </View>
           <View className="flex-row space-x-2 items-center">
             <Image
               source={require('../../assets/icons/drop.png')}
               className="h-6 w-6"
             />
-            <Text className="text-white font-semibold text-base">23%</Text>
+            <Text className="text-white font-semibold text-base">
+              {current?.humidity}%
+            </Text>
           </View>
           <View className="flex-row space-x-2 items-center">
             <Image
@@ -199,82 +217,31 @@ export const HomeScreen = () => {
             horizontal
             contentContainerStyle={{paddingHorizontal: 15}}
             showsHorizontalScrollIndicator={false}>
-            <View
-              className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
-              style={{backgroundColor: theme.bgWhite(0.15)}}>
-              <Image
-                source={require('../../assets/images/heavyrain.png')}
-                className="h-11 w-11"
-              />
-              <Text className="text-white">Monday</Text>
-              <Text className="text-white text-xl font-semibold">13&#176;</Text>
-            </View>
-
-            <View
-              className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
-              style={{backgroundColor: theme.bgWhite(0.15)}}>
-              <Image
-                source={require('../../assets/images/heavyrain.png')}
-                className="h-11 w-11"
-              />
-              <Text className="text-white">Monday</Text>
-              <Text className="text-white text-xl font-semibold">13&#176;</Text>
-            </View>
-
-            <View
-              className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
-              style={{backgroundColor: theme.bgWhite(0.15)}}>
-              <Image
-                source={require('../../assets/images/heavyrain.png')}
-                className="h-11 w-11"
-              />
-              <Text className="text-white">Monday</Text>
-              <Text className="text-white text-xl font-semibold">13&#176;</Text>
-            </View>
-
-            <View
-              className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
-              style={{backgroundColor: theme.bgWhite(0.15)}}>
-              <Image
-                source={require('../../assets/images/heavyrain.png')}
-                className="h-11 w-11"
-              />
-              <Text className="text-white">Monday</Text>
-              <Text className="text-white text-xl font-semibold">13&#176;</Text>
-            </View>
-
-            <View
-              className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
-              style={{backgroundColor: theme.bgWhite(0.15)}}>
-              <Image
-                source={require('../../assets/images/heavyrain.png')}
-                className="h-11 w-11"
-              />
-              <Text className="text-white">Monday</Text>
-              <Text className="text-white text-xl font-semibold">13&#176;</Text>
-            </View>
-
-            <View
-              className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
-              style={{backgroundColor: theme.bgWhite(0.15)}}>
-              <Image
-                source={require('../../assets/images/heavyrain.png')}
-                className="h-11 w-11"
-              />
-              <Text className="text-white">Monday</Text>
-              <Text className="text-white text-xl font-semibold">13&#176;</Text>
-            </View>
-
-            <View
-              className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
-              style={{backgroundColor: theme.bgWhite(0.15)}}>
-              <Image
-                source={require('../../assets/images/heavyrain.png')}
-                className="h-11 w-11"
-              />
-              <Text className="text-white">Monday</Text>
-              <Text className="text-white text-xl font-semibold">13&#176;</Text>
-            </View>
+            {weather?.forecast?.forecastday?.map((item: any, index: number) => {
+              return (
+                <View
+                  className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-1 mr-4"
+                  key={index}
+                  style={{backgroundColor: theme.bgWhite(0.15)}}>
+                  <Image
+                    source={
+                      WeatherImages[
+                        Object.keys(WeatherImages).includes(
+                          item?.day?.condition?.text,
+                        )
+                          ? item?.day?.condition?.text
+                          : 'other'
+                      ]
+                    }
+                    className="h-11 w-11"
+                  />
+                  <Text className="text-white">{item?.date}</Text>
+                  <Text className="text-white text-xl font-semibold">
+                    {item?.day?.avgtemp_c}&#176;
+                  </Text>
+                </View>
+              );
+            })}
           </ScrollView>
         </View>
       </SafeAreaView>
