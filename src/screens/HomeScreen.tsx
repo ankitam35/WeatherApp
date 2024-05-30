@@ -86,15 +86,19 @@ export const HomeScreen = () => {
 
   const handleLocation = (loc: {name: string}) => {
     setLocations([]);
-    fetchWeatherForecast({cityName: loc.name, days: 7}).then(data =>
-      setWeather(data),
-    );
+    fetchWeatherForecast({cityName: loc.name, days: 7})
+      .then(data => {
+        console.log(data);
+        setWeather(data);
+      })
+      .catch(error => {
+        console.error("Error fetching weather data:", error);
+      });
   };
 
   const handleSearch = (value: string) => {
     if (value.length > 2) {
       fetchLocation({cityName: value}).then(data => setLocations(data));
-      console.log(locations);
     }
   };
 
